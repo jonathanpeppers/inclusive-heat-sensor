@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-    outputs:
-      message: ${{ steps.getBody.outputs.message }}
     steps:
       - name: Call API
         run: TODO
