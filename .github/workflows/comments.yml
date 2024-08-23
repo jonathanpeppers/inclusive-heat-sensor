@@ -38,11 +38,12 @@ jobs:
           }
 
           $body = @{
-            comment = $data.body
+            comment = "Title: $($data.title) `nBody:`n$($data.body)"
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           
-          Write-Host "Will send this JSON: ``$bodyJson``..."
+          Write-Host "Will send this JSON:"
+          $bodyJson
           
           $result = Invoke-WebRequest -Method POST -Uri https://inclusiveheatsensorfunctions.azurewebsites.net/api/heatsensor -Body $bodyJson
           $result
