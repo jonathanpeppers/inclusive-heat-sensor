@@ -18,11 +18,17 @@ jobs:
     steps:
       - name: comment if offensive or angry
         shell: pwsh
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Write-Host "Starting action..."
+
+          $github = $env:GITHUB_CONTEXT | ConvertFrom-Json
+          $github
           
           $body = @{
-            comment = "${{ github.event.comment.body || github.event.issue.body || github.event.pull_request.body }}"
+            comment = $github.event.comment.body
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           
@@ -44,5 +50,3 @@ jobs:
           } else {
             Write-Host "We got nothing :("
           }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
