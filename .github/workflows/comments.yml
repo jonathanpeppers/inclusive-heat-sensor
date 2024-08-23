@@ -15,7 +15,11 @@ jobs:
       - name: comment if offensive or angry
         shell: pwsh
         run: |
-          Invoke-WebRequest -Method POST -Uri http://localhost:7241/api/heatsensor -Body "{ 'comment': '${{ github.event.comment.body }}'}"
+          $body = @{
+            comment = "${{ github.event.comment.body }}"
+          }
+          $bodyJson = $body | ConvertTo-Json -Compress
+          Invoke-WebRequest -Method POST -Uri http://localhost:7241/api/heatsensor -Body $bodyJson
           & gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "$BODY"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
