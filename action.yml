@@ -1,0 +1,55 @@
+name: 'Inclusive Heat Sensor'
+
+description: 'Make sure the conversation is staying inclusive and not getting heated.'
+
+runs:
+  using: "composite"
+  steps:
+  - name: Add a comment if the messag was offensive or angry
+    shell: pwsh
+    env:
+      GITHUB_CONTEXT: ${{ toJson(github) }}
+    run: |
+      Write-Host "Starting action..."
+
+      $github = $env:GITHUB_CONTEXT | ConvertFrom-Json
+      $github
+
+      if ($github.event.pull_request) {
+        $data = @{
+          title = $github.event.pull_request.title;
+          body = $github.event.pull_request.body;
+        }
+        Write-Host "This was a pull request that was opened."
+      } else {
+        Write-Error "TODO"
+      }
+
+      $body = @{
+        comment = "Title: $($data.title) `nBody:`n$($data.body)"
+      }
+      $bodyJson = $body | ConvertTo-Json -Compress
+      
+      Write-Host "Will send this JSON:"
+      $bodyJson
+      
+      $result = Invoke-WebRequest -Method POST -Uri https://inclusiveheatsensorfunctions.azurewebsites.net/api/heatsensor -Body $bodyJson
+      $result
+      
+      if ($result.StatusCode -eq 200) {
+        Write-Host "We got something!"
+        $content = $result.Content | ConvertFrom-Json
+        $anger = $content.anger
+        $offensive = $content.offensive
+
+        Write-Host "Anger: $anger"
+        Write-Host "Offensive: $offensive"
+
+        if ($anger -ge 7 -and $offensive -ge 7) {
+          & gh pr comment "${{ github.event.number }}" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
+        } else {
+          Write-Host "Comment is OK"
+        }
+      } else {
+        Write-Host "We got nothing :("
+      }
