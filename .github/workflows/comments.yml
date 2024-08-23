@@ -4,9 +4,11 @@ on:
   issues:
     types: [opened]
   issue_comment:
-    types: [created]
+    types: [created, edited]
   pull_request:
     types: [opened, reopened]
+  pull_request_review_comment:
+    types: [created, edited]
 
 jobs:
   comments:
@@ -20,7 +22,7 @@ jobs:
           Write-Host "Starting action..."
           
           $body = @{
-            comment = "${{ github.event.comment.body }}"
+            comment = "${{ github.event.comment.body || github.event.issue.body || github.event.pull_request.body }}"
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           
