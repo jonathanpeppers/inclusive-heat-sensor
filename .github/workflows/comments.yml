@@ -17,11 +17,30 @@ jobs:
       - name: comment if offensive or angry
         shell: pwsh
         run: |
+          Write-Host "Starting action..."
+          
           $body = @{
             comment = "${{ github.event.comment.body }}"
           }
           $bodyJson = $body | ConvertTo-Json -Compress
-          Invoke-WebRequest -Method POST -Uri http://localhost:7241/api/heatsensor -Body $bodyJson
-          & gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "$BODY"
+          
+          Write-Host "Will send this JSON: `$bodyJson`..."
+          
+          $result = Invoke-WebRequest -Method POST -Uri http://localhost:7241/api/heatsensor -Body $bodyJson
+          $result
+          
+          if ($result.StatusCode -eq 200) {
+            Write-Host "We got something!"
+            $content = $result.Content | ConvertFrom-Json
+            $anger = $content.anger
+            $offensive = $content.offensive
+
+            Write-Host "Anger: $anger"
+            Write-Host "Offensive: $offensive"
+            
+            # gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "$BODY"
+          } else {
+            Write-Host "We got nothing :("
+          }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
