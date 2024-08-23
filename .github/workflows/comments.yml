@@ -38,7 +38,7 @@ jobs:
           }
 
           $body = @{
-            comment = "${ $data.title } ${ $data.body }"
+            comment = $data.body
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           
