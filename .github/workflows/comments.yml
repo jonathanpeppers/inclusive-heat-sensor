@@ -58,7 +58,7 @@ jobs:
             Write-Host "Offensive: $offensive"
 
             if ($anger -ge 7 -and $offensive -ge 7) {
-              & gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
+              & gh issue comment "${{ github.event.number }}" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
             } else {
               Write-Host "Comment is OK"
             }
