@@ -28,7 +28,7 @@ jobs:
           
           Write-Host "Will send this JSON: ``$bodyJson``..."
           
-          $result = Invoke-WebRequest -Method POST -Uri http://localhost:7241/api/heatsensor -Body $bodyJson
+          $result = Invoke-WebRequest -Method POST -Uri https://inclusiveheatsensorfunctions.azurewebsites.net/api/heatsensor -Body $bodyJson
           $result
           
           if ($result.StatusCode -eq 200) {
