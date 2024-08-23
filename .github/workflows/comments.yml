@@ -26,6 +26,7 @@ jobs:
 
           $github = $env:GITHUB_CONTEXT | ConvertFrom-Json
           $github
+          $github.event
           
           $body = @{
             comment = $github.event.comment.body
