@@ -26,10 +26,19 @@ jobs:
 
           $github = $env:GITHUB_CONTEXT | ConvertFrom-Json
           $github
-          $github.event
-          
+
+          if ($github.event.pull_request) {
+            $data = @{
+              title = $github.event.pull_request.title;
+              body = $github.event.pull_request.body;
+            }
+            Write-Host "This was a pull request that was opened."
+          } else {
+            Write-Error "TODO"
+          }
+
           $body = @{
-            comment = $github.event.comment.body
+            comment = "${ $data.title } ${ $data.body }"
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           
