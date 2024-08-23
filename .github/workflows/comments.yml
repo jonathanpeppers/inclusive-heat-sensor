@@ -12,12 +12,10 @@ jobs:
     permissions:
       issues: write
     steps:
-      - name: Call API
-        run: TODO
-      - name: Add comment
-        run: gh issue comment "$NUMBER" --repo "$REPO" --body "$BODY"
+      - name: comment if offensive or angry
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Method POST -Uri http://localhost:7241/api/heatsensor -Body "{ 'comment': '${{ github.event.comment.body }}'}"
+          & gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "$BODY"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NUMBER: ${{ github.event.issue.number }}
-          REPO: ${{ github.repository }}
-          BODY: ${{ needs.getSimilarIssues.outputs.message }}
