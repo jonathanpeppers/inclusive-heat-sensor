@@ -35,21 +35,37 @@ public class LLMClient
     public async Task<Rating> RateComment(string comment)
     {
         _logger.LogInformation("Comment: {comment}", comment);
-        var response = await _chat.CompleteChatAsync(
-            [
-                new SystemChatMessage(Prompt),
-                new UserChatMessage(comment),
-            ],
-            new ChatCompletionOptions
+
+        try
+        {
+            var response = await _chat.CompleteChatAsync(
+                [
+                    new SystemChatMessage(Prompt),
+                    new UserChatMessage(comment),
+                ],
+                new ChatCompletionOptions
+                {
+                    Temperature = 0.5f,
+                    ResponseFormat = ChatResponseFormat.JsonObject,
+                });
+            var json = response.Value.Content[0].ToString();
+            _logger.LogInformation("Rating: {json}", json);
+            var rating = JsonSerializer.Deserialize(json, RatingContext.Default.Rating);
+            ArgumentNullException.ThrowIfNull(rating, nameof(rating));
+            return rating;
+        }
+        catch (ClientResultException ex)
+        {
+            _logger.LogInformation("Exception from OpenAI: {ex}", ex);
+            if (ex.Message.Contains("content_filter", StringComparison.OrdinalIgnoreCase))
             {
-                Temperature = 0.5f,
-                ResponseFormat = ChatResponseFormat.JsonObject,
-            });
-        var json = response.Value.Content[0].ToString();
-        _logger.LogInformation("Rating: {json}", json);
-        var rating = JsonSerializer.Deserialize(json, RatingContext.Default.Rating);
-        ArgumentNullException.ThrowIfNull(rating, nameof(rating));
-        return rating;
+                return new Rating { Offensive = 10, Anger = 10 };
+            }
+            else
+            {
+                throw;
+            }
+        }
     }
 }
 
