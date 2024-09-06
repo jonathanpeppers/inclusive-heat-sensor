@@ -34,3 +34,17 @@ Links             : {}
 ParsedHtml        : mshtml.HTMLDocumentClass
 RawContentLength  : 25
 ```
+
+## Debugging in VSCode
+
+1. Install the `Azure Functions extension` from the VSCode Extensions tab
+2. Install the `Azure Tools Core` via homebew
+  ```
+brew tap azure/functions
+brew install azure-functions-core-tools@4
+  ```
+  alternatively the `Azure Functions extension` will install them for you on the first run.
+  
+3. Open the workspace using `code .` 
+4. Cmd+P and run `.NET: Open Solution`
+5. Goto the Debugging Tab and it should auto pickup the `Attach to .NET Functions` debug option. Press F5 to run. 
