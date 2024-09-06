@@ -18,6 +18,4 @@ jobs:
       pull-requests: write
     steps:
       - name: Add a comment if the message was offensive or angry
-        uses: jonathanpeppers/inclusive-heat-sensor@action
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo hello
