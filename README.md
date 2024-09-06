@@ -16,7 +16,6 @@ You will need a `Inclusive.HeatSensor.Functions\local.settings.json` file with t
 {
   "IsEncrypted": false,
   "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "OPENAI_API_KEY": "TODO"
   }
