@@ -10,6 +10,19 @@ Invoke-WebRequest -Method POST -Uri https://inclusiveheatsensorfunctions.azurewe
 
 ## Testing Locally
 
+You will need a `Inclusive.HeatSensor.Functions\local.settings.json` file with the contents:
+
+```json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "OPENAI_API_KEY": "TODO"
+  }
+}
+```
+
 I ran this powershell command to test the bot:
 
 ```powershell
