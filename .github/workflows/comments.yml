@@ -18,4 +18,5 @@ jobs:
       pull-requests: write
     steps:
       - name: Add a comment if the message was offensive or angry
-        run: echo hello
+        run: |
+          echo "hello world!"
