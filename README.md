@@ -2,6 +2,9 @@
 
 An idea for a bot that will detect "heated conversations" scoring based on an anger or offensive rating.
 
+> [!NOTE]
+> This project is WIP, and we'll post a release when it's ready for others to use. Thanks!
+
 ## Testing on Azure
 
 ```powershell
