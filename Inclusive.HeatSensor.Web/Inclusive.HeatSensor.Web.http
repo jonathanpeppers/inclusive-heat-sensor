@@ -12,3 +12,12 @@ Accept: application/json
 {
   "comment": "this is a code review comment"
 }
+
+### POST Request
+POST {{Inclusive.HeatSensor.Web_HostAddress}}/api/HeatSensor/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "comment": "this code is very very ugly. We should stop doing it ASAP."
+}
