@@ -1,6 +1,14 @@
 @Inclusive.HeatSensor.Web_HostAddress = http://localhost:5141
 
+### GET Request
 GET {{Inclusive.HeatSensor.Web_HostAddress}}/api/HeatSensor/
 Accept: application/json
 
-###
+### POST Request
+POST {{Inclusive.HeatSensor.Web_HostAddress}}/api/HeatSensor/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "comment": "this is a code review comment"
+}

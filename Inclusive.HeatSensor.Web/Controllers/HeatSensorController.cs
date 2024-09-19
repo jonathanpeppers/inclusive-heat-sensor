@@ -12,5 +12,13 @@ namespace Inclusive.HeatSensor.Web.Controllers
         {
             return "hello from Heat Sensor";
         }
+
+        [HttpPost]
+        public ActionResult<string> Post([FromBody] HeatSensorRequest requestBoday)
+        {
+            // Handle the comment here
+
+            return "Comment received: " + requestBoday.Comment;
+        }
     }
 }
