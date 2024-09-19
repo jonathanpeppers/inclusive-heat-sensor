@@ -21,7 +21,7 @@ public class HeatSensorFunction
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req, [FromBody] string comment)
     {
         _logger.LogInformation("heatsensor request");
-        if (string.IsNullOrEmpty (comment))
+        if (string.IsNullOrEmpty(comment))
         {
             _logger.LogInformation("comment is blank");
             return new BadRequestObjectResult("Please provide a comment to rate.");
