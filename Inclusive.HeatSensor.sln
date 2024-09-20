@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inclusive.HeatSensor.Functions", "Inclusive.HeatSensor.Functions\Inclusive.HeatSensor.Functions.csproj", "{67CDA727-781C-4EBD-BD68-29DBE4B288AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inclusive.HeatSensor.Functions", "Inclusive.HeatSensor.Functions\Inclusive.HeatSensor.Functions.csproj", "{67CDA727-781C-4EBD-BD68-29DBE4B288AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inclusive.HeatSensor.Services", "Inclusive.HeatSensor.Services\Inclusive.HeatSensor.Services.csproj", "{F25252F4-766F-4A96-B519-CA8979FB0038}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inclusive.HeatSensor.Web", "Inclusive.HeatSensor.Web\Inclusive.HeatSensor.Web.csproj", "{42B3DD52-00FD-42A6-9AC8-8314E4244FEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{67CDA727-781C-4EBD-BD68-29DBE4B288AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67CDA727-781C-4EBD-BD68-29DBE4B288AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67CDA727-781C-4EBD-BD68-29DBE4B288AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F25252F4-766F-4A96-B519-CA8979FB0038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F25252F4-766F-4A96-B519-CA8979FB0038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F25252F4-766F-4A96-B519-CA8979FB0038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F25252F4-766F-4A96-B519-CA8979FB0038}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42B3DD52-00FD-42A6-9AC8-8314E4244FEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B3DD52-00FD-42A6-9AC8-8314E4244FEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B3DD52-00FD-42A6-9AC8-8314E4244FEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B3DD52-00FD-42A6-9AC8-8314E4244FEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

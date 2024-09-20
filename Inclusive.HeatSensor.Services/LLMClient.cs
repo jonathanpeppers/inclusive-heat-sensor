@@ -5,7 +5,7 @@ using System.ClientModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Inclusive.HeatSensor.Functions;
+namespace Inclusive.HeatSensor.Services;
 
 public class LLMClient
 {
