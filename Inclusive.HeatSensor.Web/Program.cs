@@ -2,6 +2,10 @@ using Inclusive.HeatSensor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add configurations
+builder.Services.Configure<LLMClientOptions>(
+    builder.Configuration.GetSection(nameof(LLMClientOptions)));
+
 // Add services to the container.
 builder.Services.AddSingleton<LLMClient>();
 builder.Services.AddControllers();
