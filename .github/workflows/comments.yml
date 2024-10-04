@@ -41,7 +41,8 @@ jobs:
           $github
           Write-Host "$Env:GITHUB_CONTEXT"
 
-          if ($github.event.pull_request) {
+          $isPr = true
+          if ($github.event_name -eq "pull_request") {
             $data = @{
               title = $github.event.pull_request.title;
               body = $github.event.pull_request.body;
@@ -54,9 +55,18 @@ jobs:
               body = $github.event.comment.body
             }
             $number = $github.event.issue.number
+            $isPr = false
             Write-Host "There was a comment on an issue or pull request."
+          } elseif ($github.event_name -eq "issues") {
+            $data = @{
+              title = $github.event.issue.title
+              body = $github.event.issue.body
+            }
+            $number = $github.event.issue.number
+            $isPr = false
+            Write-Host "A new issue was opened."
           } else {
-            Write-Error "TODO"
+            Write-Error "TODO: $($github.event_name)"
           }
 
           $body = @{
@@ -82,19 +92,19 @@ jobs:
             if ($anger -ge 7 -and $offensive -ge 7) {
               $commentToPost = "${{ inputs.commentToPost }}"
               if ($commentToPost) {
-                if ($github.event_name -eq "issue_comment") {
-                  & gh issue comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
-                } else {
+                if ($isPr) {
                   & gh pr comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
+                } else {
+                  & gh issue comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
                 }
               }
 
               $labelToAdd = "${{ inputs.labelToAdd }}"
               if ($labelToAdd) {
-                if ($github.event_name -eq "issue_comment") {
-                  & gh issue edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
-                } else {
+                if ($isPr) {
                   & gh pr edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
+                } else {
+                  & gh issue edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
                 }
               }
 
