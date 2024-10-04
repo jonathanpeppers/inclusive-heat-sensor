@@ -1,4 +1,5 @@
-@Inclusive.HeatSensor.Web_HostAddress = http://localhost:5141
+# @Inclusive.HeatSensor.Web_HostAddress = http://localhost:5141
+@Inclusive.HeatSensor.Web_HostAddress = https://icr-heat-sensor.eus2.sample-dev.azgrafana-test.io
 
 ### GET Request
 GET {{Inclusive.HeatSensor.Web_HostAddress}}/api/HeatSensor/

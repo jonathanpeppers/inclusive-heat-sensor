@@ -1,5 +1,6 @@
 ﻿using Azure.AI.OpenAI;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OpenAI.Chat;
 using System.ClientModel;
 using System.Text.Json;
@@ -24,6 +25,26 @@ public class LLMClient
         }
         _client = new AzureOpenAIClient(new Uri("https://icropenaiservice2.openai.azure.com/"), new ApiKeyCredential(apiKey));
         _chat = _client.GetChatClient("gpt-4o");
+    }
+
+    public LLMClient(IOptions<LLMClientOptions> llmClientOptions, ILogger<LLMClient> logger)
+    {
+        var _llmClientOptions = llmClientOptions.Value;
+        _logger = logger;
+
+        if (string.IsNullOrEmpty(_llmClientOptions.OpenAIApiKey))
+        {
+            var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                ArgumentNullException.ThrowIfNull(apiKey, nameof(apiKey));
+            }
+
+            _llmClientOptions.OpenAIApiKey = apiKey;
+        }
+
+        _client = new AzureOpenAIClient(new Uri(_llmClientOptions.OpenAIEndpoint), new ApiKeyCredential(_llmClientOptions.OpenAIApiKey));
+        _chat = _client.GetChatClient(_llmClientOptions.DeploymentName);
     }
 
     const string Prompt = """
