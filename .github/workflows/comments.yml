@@ -34,6 +34,7 @@ jobs:
 
           $github = $env:GITHUB_CONTEXT | ConvertFrom-Json
           $github
+          Write-Host "$Env:GITHUB_CONTEXT"
 
           if ($github.event.pull_request) {
             $data = @{
@@ -80,6 +81,9 @@ jobs:
             Write-Host "Offensive: $offensive"
 
             if ($anger -ge 7 -and $offensive -ge 7) {
+              & git status
+              & git remote -v
+              Write-Host "Repo: ${{ github.repository }}"
               & gh pr comment "$number" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
             } else {
               Write-Host "Comment is OK"
