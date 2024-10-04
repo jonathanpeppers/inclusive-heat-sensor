@@ -9,6 +9,13 @@ on:
     types: [opened, reopened]
   pull_request_review_comment:
     types: [created, edited]
+  workflow_call:
+    inputs:
+      sensitivity:
+        description: "How hot it must be to burn"
+        default: "0.5"
+        required: false
+        type: string
 
 jobs:
   comments:
