@@ -45,7 +45,9 @@ jobs:
             Write-Host "github: $github"
             Write-Host "github.event: $($github.event)"
             Write-Host "github.event.comments: $($github.event.comments)"
+            Write-Host "github.event.comment: $($github.event.comment)"
             Write-Host "github.event.issue: $($github.event.issue)"
+            Write-Host "github.event.issue_comment: $($github.event.issue_comment)"
             Write-Error "TODO"
           }
 
