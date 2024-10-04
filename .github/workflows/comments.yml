@@ -49,6 +49,14 @@ jobs:
             }
             $number = $github.event.number
             Write-Host "This was a pull request that was opened."
+          } elseif ($github.event_name -eq "pull_request_review_comment") {
+            $data = @{
+              title = ""
+              body = $github.event.comment.body
+            }
+            $number = $github.event.pull_request.number
+            $isPr = true
+            Write-Host "There was a review comment on a pull request."
           } elseif ($github.event_name -eq "issue_comment") {
             $data = @{
               title = ""
