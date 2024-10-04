@@ -42,7 +42,7 @@ jobs:
             }
             Write-Host "This was a pull request that was opened."
           } else {
-            Write-Error "TODO"
+            Write-Error "TODO\n$github.event"
           }
 
           $body = @{
