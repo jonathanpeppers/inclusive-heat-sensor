@@ -43,9 +43,9 @@ jobs:
             Write-Host "This was a pull request that was opened."
           } else {
             Write-Host "github: $github"
-            Write-Host "github.event: $github.event"
-            Write-Host "github.event.comments: $github.event.comments"
-            Write-Host "github.event.issue: $github.event.issue"
+            Write-Host "github.event: $($github.event)"
+            Write-Host "github.event.comments: $($github.event.comments)"
+            Write-Host "github.event.issue: $($github.event.issue)"
             Write-Error "TODO"
           }
 
