@@ -85,7 +85,11 @@ jobs:
               & git status
               & git remote -v
               Write-Host "Repo: ${{ github.repository }} Number: $number"
-              & gh pr comment "$number" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
+              if ($github.event_name -eq "issue_comment") {
+                & gh issue comment "$number" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
+              } else {
+                & gh pr comment "$number" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
+              }
             } else {
               Write-Host "Comment is OK"
             }
