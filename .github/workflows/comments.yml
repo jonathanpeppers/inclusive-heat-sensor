@@ -24,6 +24,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
+      - uses: actions/checkout@v4
       - name: comment if offensive or angry
         shell: pwsh
         env:
@@ -43,12 +44,12 @@ jobs:
             }
             $number = $github.event.number
             Write-Host "This was a pull request that was opened."
-          } elseif ($github.event.comment) {
+          } elseif ($github.event_name -eq "issue_comment") {
             $data = @{
               title = ""
               body = $github.event.comment.body
             }
-            $number = $github.event.comment.number
+            $number = $github.event.issue.number
             Write-Host "There was a comment on an issue or pull request."
           } else {
             Write-Host "github: $github"
@@ -83,7 +84,7 @@ jobs:
             if ($anger -ge 7 -and $offensive -ge 7) {
               & git status
               & git remote -v
-              Write-Host "Repo: ${{ github.repository }}"
+              Write-Host "Repo: ${{ github.repository }} Number: $number"
               & gh pr comment "$number" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
             } else {
               Write-Host "Comment is OK"
