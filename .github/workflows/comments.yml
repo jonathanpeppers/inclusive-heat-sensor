@@ -11,9 +11,14 @@ on:
     types: [created, edited]
   workflow_call:
     inputs:
-      sensitivity:
-        description: "How hot it must be to burn"
-        default: "0.5"
+      commentToPost:
+        description: "The comment to post on the issue or pull request if it's getting heated."
+        default: ""
+        required: false
+        type: string
+      labelToAdd:
+        description: "The label to add to an issue or pull request if it's getting heated."
+        default: ""
         required: false
         type: string
 
@@ -24,7 +29,6 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      #- uses: actions/checkout@v4
       - name: comment if offensive or angry
         shell: pwsh
         env:
@@ -52,12 +56,6 @@ jobs:
             $number = $github.event.issue.number
             Write-Host "There was a comment on an issue or pull request."
           } else {
-            Write-Host "github: $github"
-            Write-Host "github.event: $($github.event)"
-            Write-Host "github.event.comments: $($github.event.comments)"
-            Write-Host "github.event.comment: $($github.event.comment)"
-            Write-Host "github.event.issue: $($github.event.issue)"
-            Write-Host "github.event.issue_comment: $($github.event.issue_comment)"
             Write-Error "TODO"
           }
 
@@ -82,13 +80,26 @@ jobs:
             Write-Host "Offensive: $offensive"
 
             if ($anger -ge 7 -and $offensive -ge 7) {
-              & git status
-              & git remote -v
-              Write-Host "Repo: ${{ github.repository }} Number: $number"
-              if ($github.event_name -eq "issue_comment") {
-                & gh issue comment "$number" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
-              } else {
-                & gh pr comment "$number" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
+              $commentToPost = "${{ inputs.commentToPost }}"
+              if ($commentToPost) {
+                if ($github.event_name -eq "issue_comment") {
+                  & gh issue comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
+                } else {
+                  & gh pr comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
+                }
+              }
+
+              $labelToAdd = "${{ inputs.labelToAdd }}"
+              if ($labelToAdd) {
+                if ($github.event_name -eq "issue_comment") {
+                  & gh issue edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
+                } else {
+                  & gh pr edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
+                }
+              }
+
+              if (!$commentToPost -and !$labelToAdd) {
+                Write-Host "Neither 'commentToPost' nor 'labelToAdd' was set, so not notifying anybody"
               }
             } else {
               Write-Host "Comment is OK"
