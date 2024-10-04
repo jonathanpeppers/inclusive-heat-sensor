@@ -40,12 +40,15 @@ jobs:
               title = $github.event.pull_request.title;
               body = $github.event.pull_request.body;
             }
+            $number = $github.event.number
             Write-Host "This was a pull request that was opened."
           } elseif ($github.event.comment) {
             $data = @{
               title = ""
               body = $github.event.comment.body
             }
+            $number = $github.event.comment.number
+            Write-Host "There was a comment on an issue or pull request."
           } else {
             Write-Host "github: $github"
             Write-Host "github.event: $($github.event)"
@@ -77,7 +80,7 @@ jobs:
             Write-Host "Offensive: $offensive"
 
             if ($anger -ge 7 -and $offensive -ge 7) {
-              & gh pr comment "${{ github.event.number }}" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
+              & gh pr comment "$number" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
             } else {
               Write-Host "Comment is OK"
             }
