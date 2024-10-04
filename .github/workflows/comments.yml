@@ -24,7 +24,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      #- uses: actions/checkout@v4
       - name: comment if offensive or angry
         shell: pwsh
         env:
