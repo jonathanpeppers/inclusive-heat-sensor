@@ -41,7 +41,7 @@ jobs:
               body = $github.event.pull_request.body;
             }
             Write-Host "This was a pull request that was opened."
-          } else if ($github.event.comment) {
+          } elseif ($github.event.comment) {
             $data = @{
               title = ""
               body = $github.event.comment.body
