@@ -9,6 +9,18 @@ on:
     types: [opened, reopened]
   pull_request_review_comment:
     types: [created, edited]
+  workflow_call:
+    inputs:
+      commentToPost:
+        description: "The comment to post on the issue or pull request if it's getting heated."
+        default: ""
+        required: false
+        type: string
+      labelToAdd:
+        description: "The label to add to an issue or pull request if it's getting heated."
+        default: ""
+        required: false
+        type: string
 
 jobs:
   comments:
@@ -27,15 +39,42 @@ jobs:
 
           $github = $env:GITHUB_CONTEXT | ConvertFrom-Json
           $github
+          Write-Host "$Env:GITHUB_CONTEXT"
 
-          if ($github.event.pull_request) {
+          $isPr = true
+          if ($github.event_name -eq "pull_request") {
             $data = @{
               title = $github.event.pull_request.title;
               body = $github.event.pull_request.body;
             }
+            $number = $github.event.number
             Write-Host "This was a pull request that was opened."
+          } elseif ($github.event_name -eq "pull_request_review_comment") {
+            $data = @{
+              title = ""
+              body = $github.event.comment.body
+            }
+            $number = $github.event.pull_request.number
+            $isPr = true
+            Write-Host "There was a review comment on a pull request."
+          } elseif ($github.event_name -eq "issue_comment") {
+            $data = @{
+              title = ""
+              body = $github.event.comment.body
+            }
+            $number = $github.event.issue.number
+            $isPr = false
+            Write-Host "There was a comment on an issue or pull request."
+          } elseif ($github.event_name -eq "issues") {
+            $data = @{
+              title = $github.event.issue.title
+              body = $github.event.issue.body
+            }
+            $number = $github.event.issue.number
+            $isPr = false
+            Write-Host "A new issue was opened."
           } else {
-            Write-Error "TODO"
+            Write-Error "TODO: $($github.event_name)"
           }
 
           $body = @{
@@ -59,7 +98,27 @@ jobs:
             Write-Host "Offensive: $offensive"
 
             if ($anger -ge 7 -and $offensive -ge 7) {
-              & gh pr comment "${{ github.event.number }}" --repo "${{ github.repository }}" --body "Hi, lovely human. I detect a little salt!"
+              $commentToPost = "${{ inputs.commentToPost }}"
+              if ($commentToPost) {
+                if ($isPr) {
+                  & gh pr comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
+                } else {
+                  & gh issue comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
+                }
+              }
+
+              $labelToAdd = "${{ inputs.labelToAdd }}"
+              if ($labelToAdd) {
+                if ($isPr) {
+                  & gh pr edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
+                } else {
+                  & gh issue edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
+                }
+              }
+
+              if (!$commentToPost -and !$labelToAdd) {
+                Write-Host "Neither 'commentToPost' nor 'labelToAdd' was set, so not notifying anybody"
+              }
             } else {
               Write-Host "Comment is OK"
             }
