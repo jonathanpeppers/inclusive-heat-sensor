@@ -138,18 +138,18 @@ jobs:
                 Write-Host "Minimizing comment"
 
                 $mutation =@"
-                      mutation {
-                          __typename
-                          minimizeComment(
-                              input: {
-                                  subjectId: "$($commentId)",
-                                  classifier: ABUSE
-                              }
-                          ) {
-                              clientMutationId
-                          }
-                      }
-                "@
+          mutation {
+              __typename
+              minimizeComment(
+                  input: {
+                      subjectId: "$($commentId)",
+                      classifier: ABUSE
+                  }
+              ) {
+                  clientMutationId
+              }
+          }
+          "@
 
                 $payload = @{
                     query=$mutation
