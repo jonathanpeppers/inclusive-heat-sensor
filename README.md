@@ -8,7 +8,7 @@ An idea for a bot that will detect "heated conversations" scoring based on an an
 ## Testing on Azure
 
 ```powershell
-Invoke-WebRequest -Method POST -Uri https://inclusiveheatsensorfunctions.azurewebsites.net/api/heatsensor -ContentType "application/json" -Body "{ 'comment': 'THIS PROJECT IS TERRIBLE'}"
+Invoke-WebRequest -Method POST -Uri https://icr-heat-sensor.wus3.sample-dev.azgrafana-test.io/api/HeatSensor -ContentType "application/json" -Body '{ "comment": "THIS PROJECT IS TERRIBLE"}'
 ```
 
 ## Testing Locally
