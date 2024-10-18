@@ -90,7 +90,9 @@ jobs:
           Write-Host "Will send this JSON:"
           $bodyJson
           
-          $result = Invoke-WebRequest -Method POST -Uri "${{ inputs.endpoint }}" -Body $bodyJson
+          $endpoint = "${{ inputs.endpoint }}"
+          Write-Host "To: $endpoint"
+          $result = Invoke-WebRequest -Method POST -Uri "$endpoint" -Body $bodyJson
           $result
           
           if ($result.StatusCode -eq 200) {
