@@ -21,6 +21,11 @@ on:
         default: ""
         required: false
         type: string
+      endpoint:
+        description: "The web service to use for sentiment analysis."
+        default: "https://icr-heat-sensor.wus3.sample-dev.azgrafana-test.io/api/HeatSensor"
+        required: false
+        type: string
 
 jobs:
   comments:
@@ -85,7 +90,12 @@ jobs:
           Write-Host "Will send this JSON:"
           $bodyJson
           
-          $result = Invoke-WebRequest -Method POST -Uri https://inclusiveheatsensorfunctions.azurewebsites.net/api/heatsensor -Body $bodyJson
+          $endpoint = "${{ inputs.endpoint }}"
+          if (!$endpoint) {
+            $endpoint = 'https://icr-heat-sensor.wus3.sample-dev.azgrafana-test.io/api/HeatSensor';
+          }
+          Write-Host "To: $endpoint"
+          $result = Invoke-WebRequest -Method POST -Uri "$endpoint" -ContentType "application/json" -Body $bodyJson
           $result
           
           if ($result.StatusCode -eq 200) {
