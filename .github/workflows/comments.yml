@@ -91,6 +91,9 @@ jobs:
           $bodyJson
           
           $endpoint = "${{ inputs.endpoint }}"
+          if (!$endpoint) {
+            $endpoint = 'https://icr-heat-sensor.wus3.sample-dev.azgrafana-test.io/api/HeatSensor';
+          }
           Write-Host "To: $endpoint"
           $result = Invoke-WebRequest -Method POST -Uri "$endpoint" -Body $bodyJson
           $result
