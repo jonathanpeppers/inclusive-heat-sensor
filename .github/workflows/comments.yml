@@ -134,6 +134,8 @@ jobs:
               }
 
               # this is where check if a comment id is set, if so call minimize comment here
+              Write-Host "This is comment id:"
+          $comment
               if ($commentId) {
                 Write-Host "Minimizing comment"
 
