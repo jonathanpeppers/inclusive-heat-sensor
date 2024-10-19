@@ -110,7 +110,7 @@ jobs:
             Write-Host "Anger: $anger"
             Write-Host "Offensive: $offensive"
 
-            if ($anger -ge 7 -and $offensive -ge 7) {
+            if ($anger -ge 2 -and $offensive -ge 2) {
               $commentToPost = "${{ inputs.commentToPost }}"
               if ($commentToPost) {
                 if ($isPr) {
