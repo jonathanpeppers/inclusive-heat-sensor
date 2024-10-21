@@ -48,6 +48,7 @@ jobs:
           Write-Host "$Env:GITHUB_CONTEXT"
 
           $isPr = true
+          $commentId = ""
           if ($github.event_name -eq "pull_request") {
             $data = @{
               title = $github.event.pull_request.title;
