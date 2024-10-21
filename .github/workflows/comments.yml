@@ -99,6 +99,10 @@ jobs:
           Write-Host "To: $endpoint"
           $result = Invoke-WebRequest -Method POST -Uri "$endpoint" -ContentType "application/json" -Body $bodyJson
           $result
+
+          if (!$commentId) {
+            Write-Host "No COMMENT ID SET"
+          }
           
           if ($result.StatusCode -eq 200) {
             Write-Host "We got something!"
