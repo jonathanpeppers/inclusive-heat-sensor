@@ -116,8 +116,7 @@ jobs:
               Write-Host "Failed to get comment id"
               $commentId = $null
             }
-            Write-Host "This is comment id:"
-          $commentId
+            Write-Host "This is comment id: $commentId"
               if ($commentId) {
                 Write-Host "Minimizing comment"
 
@@ -172,8 +171,7 @@ jobs:
                 }
               }
 
-              Write-Host "This is comment id:"
-          $commentId
+              Write-Host "This is comment id: $commentId"
               if ($commentId) {
                 Write-Host "Minimizing comment"
 
