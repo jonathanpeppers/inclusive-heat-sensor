@@ -145,7 +145,7 @@ jobs:
                 Write-Host "No comment id to minimize"
               }
 
-            if ($anger -ge 8 -and $offensive -ge 8) {
+            if ($anger -ge 7 -and $offensive -ge 7) {
               Write-Host "Anger/Offense condition reached"
               $commentToPost = "${{ inputs.commentToPost }}"
               if ($commentToPost) {
