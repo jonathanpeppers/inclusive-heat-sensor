@@ -110,13 +110,6 @@ jobs:
 
             Write-Host "Anger: $anger"
             Write-Host "Offensive: $offensive"
-            try {
-              Write-Host "Trying to get comment id"
-              $commentId = $content.commentId
-            } catch {
-              Write-Host "Failed to get comment id"
-              $commentId = $null
-            }
             Write-Host "This is comment id: $commentId"
               if ($commentId) {
                 Write-Host "Minimizing comment"
@@ -152,7 +145,7 @@ jobs:
                 Write-Host "No comment id to minimize"
               }
 
-            if ($anger -ge 2 -and $offensive -ge 2) {
+            if ($anger -ge 8 -and $offensive -ge 8) {
               Write-Host "Anger/Offense condition reached"
               $commentToPost = "${{ inputs.commentToPost }}"
               if ($commentToPost) {
@@ -172,82 +165,11 @@ jobs:
                 }
               }
 
-              Write-Host "This is comment id: $commentId"
-              if ($commentId) {
-                Write-Host "Minimizing comment"
-
-                $mutation =@"
-          mutation {
-              __typename
-              minimizeComment(
-                  input: {
-                      subjectId: "$($commentId)",
-                      classifier: ABUSE
-                  }
-              ) {
-                  clientMutationId
-              }
-          }
-          "@
-
-                $payload = @{
-                    query=$mutation
-                }
-
-                $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-                $headers.Add("content-type","application/json")
-                $headers.Add("Authorization","bearer $Env:GITHUB_TOKEN")
-
-                $body = ConvertTo-Json $payload
-                $url = "https://api.github.com/graphql"
-                $response= Invoke-RestMethod -Uri $url -Headers $headers -Method "POST" -Body $body
-
-                Write-Host "Minimized comment"
-              } else {
-                Write-Host "No comment id to minimize"
-              }
-
               if (!$commentToPost -and !$labelToAdd) {
                 Write-Host "Neither 'commentToPost' nor 'labelToAdd' was set, so not notifying anybody"
               }
             } else {
               Write-Host "Comment is OK"
-              # this is where check if a comment id is set, if so call minimize comment here
-              Write-Host "This is comment id:"
-          $commentId
-              if ($commentId) {
-                Write-Host "Minimizing comment"
-
-                $mutation =@"
-          mutation {
-              __typename
-              minimizeComment(
-                  input: {
-                      subjectId: "$($commentId)",
-                      classifier: ABUSE
-                  }
-              ) {
-                  clientMutationId
-              }
-          }
-          "@
-
-                $payload = @{
-                    query=$mutation
-                }
-
-                $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-                $headers.Add("content-type","application/json")
-                $headers.Add("Authorization","bearer $Env:GITHUB_TOKEN")
-
-                $body = ConvertTo-Json $payload
-                $url = "https://api.github.com/graphql"
-                $response= Invoke-RestMethod -Uri $url -Headers $headers -Method "POST" -Body $body
-
-                Write-Host "Minimized comment"
-              } else {
-                Write-Host "No comment id to minimize"
-              }
             }
           } else {
             Write-Host "We got nothing :("
