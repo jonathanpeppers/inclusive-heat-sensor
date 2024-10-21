@@ -111,6 +111,7 @@ jobs:
             Write-Host "Offensive: $offensive"
 
             if ($anger -ge 2 -and $offensive -ge 2) {
+              Write-Host "Anger/Offense condition reached"
               $commentToPost = "${{ inputs.commentToPost }}"
               if ($commentToPost) {
                 if ($isPr) {
@@ -166,6 +167,8 @@ jobs:
                 $response= Invoke-RestMethod -Uri $url -Headers $headers -Method "POST" -Body $body
 
                 Write-Host "Minimized comment"
+              } else {
+                Write-Host "No comment id to minimize"
               }
             } else {
               Write-Host "Comment is OK"
