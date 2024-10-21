@@ -103,6 +103,8 @@ jobs:
 
           if (!$commentId) {
             Write-Host "No COMMENT ID SET"
+          } else {
+            Write-Host "We have a comment id!"
           }
           
           if ($result.StatusCode -eq 200) {
@@ -148,7 +150,7 @@ jobs:
                 Write-Host "No comment id to minimize"
               }
 
-            if ($anger -ge 8 -and $offensive -ge 8) {
+            if ($anger -ge 7 -and $offensive -ge 7) {
               Write-Host "Anger/Offense condition reached"
               $commentToPost = "${{ inputs.commentToPost }}"
               if ($commentToPost) {
