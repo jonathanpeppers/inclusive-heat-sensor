@@ -110,6 +110,42 @@ jobs:
             Write-Host "Anger: $anger"
             Write-Host "Offensive: $offensive"
 
+            Write-Host "This is comment id:"
+          $commentId
+              if ($commentId) {
+                Write-Host "Minimizing comment"
+
+                $mutation =@"
+          mutation {
+              __typename
+              minimizeComment(
+                  input: {
+                      subjectId: "$($commentId)",
+                      classifier: ABUSE
+                  }
+              ) {
+                  clientMutationId
+              }
+          }
+          "@
+
+                $payload = @{
+                    query=$mutation
+                }
+
+                $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+                $headers.Add("content-type","application/json")
+                $headers.Add("Authorization","bearer $Env:GITHUB_TOKEN")
+
+                $body = ConvertTo-Json $payload
+                $url = "https://api.github.com/graphql"
+                $response= Invoke-RestMethod -Uri $url -Headers $headers -Method "POST" -Body $body
+
+                Write-Host "Minimized comment"
+              } else {
+                Write-Host "No comment id to minimize"
+              }
+
             if ($anger -ge 2 -and $offensive -ge 2) {
               Write-Host "Anger/Offense condition reached"
               $commentToPost = "${{ inputs.commentToPost }}"
