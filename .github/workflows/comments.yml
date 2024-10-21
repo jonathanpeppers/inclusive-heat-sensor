@@ -109,7 +109,13 @@ jobs:
 
             Write-Host "Anger: $anger"
             Write-Host "Offensive: $offensive"
-
+            try {
+              Write-Host "Trying to get comment id"
+              $commentId = $content.commentId
+            } catch {
+              Write-Host "Failed to get comment id"
+              $commentId = $null
+            }
             Write-Host "This is comment id:"
           $commentId
               if ($commentId) {
