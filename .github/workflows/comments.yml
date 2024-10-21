@@ -133,7 +133,8 @@ jobs:
               if (!$commentToPost -and !$labelToAdd) {
                 Write-Host "Neither 'commentToPost' nor 'labelToAdd' was set, so not notifying anybody"
               }
-
+            } else {
+              Write-Host "Comment is OK"
               # this is where check if a comment id is set, if so call minimize comment here
               Write-Host "This is comment id:"
           $commentId
@@ -170,8 +171,6 @@ jobs:
               } else {
                 Write-Host "No comment id to minimize"
               }
-            } else {
-              Write-Host "Comment is OK"
             }
           } else {
             Write-Host "We got nothing :("
