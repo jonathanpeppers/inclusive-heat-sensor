@@ -44,7 +44,7 @@ jobs:
           Write-Host "Starting action..."
 
           $github = $env:GITHUB_CONTEXT | ConvertFrom-Json
-          $github
+          $github | Out-String | Write-Host
           Write-Host "$Env:GITHUB_CONTEXT"
 
           $isPr = true
@@ -89,7 +89,7 @@ jobs:
           $bodyJson = $body | ConvertTo-Json -Compress
           
           Write-Host "Will send this JSON:"
-          $bodyJson
+          $bodyJson | Out-String | Write-Host
           
           $endpoint = "${{ inputs.endpoint }}"
           if (!$endpoint) {
@@ -97,7 +97,7 @@ jobs:
           }
           Write-Host "To: $endpoint"
           $result = Invoke-WebRequest -Method POST -Uri "$endpoint" -ContentType "application/json" -Body $bodyJson
-          $result
+          $result | Out-String | Write-Host
           
           if ($result.StatusCode -eq 200) {
             Write-Host "We got something!"
@@ -136,3 +136,4 @@ jobs:
           } else {
             Write-Host "We got nothing :("
           }
+          exit 0
