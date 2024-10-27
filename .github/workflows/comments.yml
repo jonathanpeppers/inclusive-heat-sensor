@@ -34,8 +34,6 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - name: checkout code
-        uses: jonathanpeppers/inclusive-heat-sensor/.github/workflows/comments.yml@dev/haritha/min-comment
       - name: comment if offensive or angry
         shell: pwsh
         continue-on-error: true
