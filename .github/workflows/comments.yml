@@ -115,6 +115,7 @@ jobs:
 
             Write-Host "Anger: $anger"
             Write-Host "Offensive: $offensive"
+            Write-Host "Minimizing comment id: $commentId"
             if ($commentId -and $minimizeComment -eq $true) {
               Write-Host "Minimizing comment id: $commentId"
 
