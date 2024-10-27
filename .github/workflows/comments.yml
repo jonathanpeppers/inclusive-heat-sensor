@@ -61,7 +61,7 @@ jobs:
               title = ""
               body = $github.event.comment.body
             }
-            $commentId = $github.event.comment.id
+            $commentId = $github.event.comment.node_id
             $number = $github.event.pull_request.number
             $isPr = true
             Write-Host "There was a review comment on a pull request."
@@ -70,7 +70,7 @@ jobs:
               title = ""
               body = $github.event.comment.body
             }
-            $commentId = $github.event.comment.id
+            $commentId = $github.event.comment.node_id
             $number = $github.event.issue.number
             $isPr = false
             Write-Host "There was a comment on an issue or pull request."
