@@ -110,9 +110,8 @@ jobs:
 
             Write-Host "Anger: $anger"
             Write-Host "Offensive: $offensive"
-            Write-Host "This is comment id: $commentId"
             if ($commentId) {
-              Write-Host "Minimizing comment"
+              Write-Host "Minimizing comment id: $commentId"
 
                 $mutation =@"
           mutation {
@@ -146,7 +145,7 @@ jobs:
               Write-Host "No comment id to minimize"
             }
 
-            if ($anger -ge 3 -and $offensive -ge 3) {
+            if ($anger -ge 7 -and $offensive -ge 7) {
               Write-Host "Anger/Offense condition reached"
               $commentToPost = "${{ inputs.commentToPost }}"
               if ($commentToPost) {
