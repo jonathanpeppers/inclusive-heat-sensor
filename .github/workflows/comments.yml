@@ -28,7 +28,7 @@ on:
         type: string
       minimizeComment:
         description: "Opt in to minimizing a comment on the issue or pull request if it's getting heated."
-        default: ""
+        default: false
         required: false
         type: boolean
 
