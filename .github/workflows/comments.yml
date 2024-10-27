@@ -139,6 +139,7 @@ jobs:
               $minimizeComment = "${{ inputs.minimizeComment }}"
               if ($commentId -and $minimizeComment -eq $true) {
                 Write-Host "Minimizing comment id: $commentId"
+
                   $mutation =@"
             mutation {
                 __typename
@@ -152,7 +153,6 @@ jobs:
                 }
             }
             "@
-
                 $payload = @{
                     query=$mutation
                 }
