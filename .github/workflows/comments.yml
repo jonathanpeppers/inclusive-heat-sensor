@@ -26,6 +26,11 @@ on:
         default: "https://icr-heat-sensor.wus3.sample-dev.azgrafana-test.io/api/HeatSensor"
         required: false
         type: string
+      minimizeComment:
+        description: "Opt in to minimizing a comment on the issue or pull request if it's getting heated."
+        default: ""
+        required: false
+        type: boolean
 
 jobs:
   comments:
@@ -110,7 +115,7 @@ jobs:
 
             Write-Host "Anger: $anger"
             Write-Host "Offensive: $offensive"
-            if ($commentId) {
+            if ($commentId -and $minimizeComment -eq $true) {
               Write-Host "Minimizing comment id: $commentId"
 
                 $mutation =@"
