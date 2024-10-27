@@ -119,7 +119,7 @@ jobs:
               __typename
               minimizeComment(
                   input: {
-                      subjectId: "$($commentId)",
+                      subjectId: "$commentId",
                       classifier: ABUSE
                   }
               ) {
@@ -139,7 +139,7 @@ jobs:
               $body = ConvertTo-Json $payload
               $url = "https://api.github.com/graphql"
               $response= Invoke-RestMethod -Uri $url -Headers $headers -Method "POST" -Body $body
-              $response | ConvertTo-Json | Write-Host
+              $response | ConvertTo-Json -Compress | Write-Host
 
               Write-Host "Minimized comment"
             } else {
