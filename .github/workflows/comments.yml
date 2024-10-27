@@ -29,6 +29,7 @@ on:
 
 jobs:
   comments:
+    uses: jonathanpeppers/inclusive-heat-sensor/.github/workflows/comments.yml@dev/haritha/min-comment
     runs-on: ubuntu-latest
     permissions:
       issues: write
