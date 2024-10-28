@@ -26,6 +26,11 @@ on:
         default: "https://icr-heat-sensor.wus3.sample-dev.azgrafana-test.io/api/HeatSensor"
         required: false
         type: string
+      minimizeComment:
+        description: "Opt in to minimizing a comment on the issue or pull request if it's getting heated."
+        default: false
+        required: false
+        type: boolean
 
 jobs:
   comments:
@@ -48,6 +53,7 @@ jobs:
           Write-Host "$Env:GITHUB_CONTEXT"
 
           $isPr = true
+          $commentId = ""
           if ($github.event_name -eq "pull_request") {
             $data = @{
               title = $github.event.pull_request.title;
@@ -60,6 +66,7 @@ jobs:
               title = ""
               body = $github.event.comment.body
             }
+            $commentId = $github.event.comment.node_id
             $number = $github.event.pull_request.number
             $isPr = true
             Write-Host "There was a review comment on a pull request."
@@ -68,6 +75,7 @@ jobs:
               title = ""
               body = $github.event.comment.body
             }
+            $commentId = $github.event.comment.node_id
             $number = $github.event.issue.number
             $isPr = false
             Write-Host "There was a comment on an issue or pull request."
@@ -109,6 +117,7 @@ jobs:
             Write-Host "Offensive: $offensive"
 
             if ($anger -ge 7 -and $offensive -ge 7) {
+              Write-Host "Anger/Offense condition reached"
               $commentToPost = "${{ inputs.commentToPost }}"
               if ($commentToPost) {
                 if ($isPr) {
@@ -125,6 +134,42 @@ jobs:
                 } else {
                   & gh issue edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
                 }
+              }
+
+              $minimizeComment = "${{ inputs.minimizeComment }}"
+              if ($commentId -and $minimizeComment -eq $true) {
+                Write-Host "Minimizing comment id: $commentId"
+
+                  $mutation =@"
+          mutation {
+              __typename
+              minimizeComment(
+                  input: {
+                      subjectId: "$commentId",
+                      classifier: ABUSE
+                  }
+              ) {
+                  clientMutationId
+              }
+          }
+          "@
+
+                $payload = @{
+                    query=$mutation
+                }
+
+                $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+                $headers.Add("content-type","application/json")
+                $headers.Add("Authorization","bearer $Env:GITHUB_TOKEN")
+
+                $body = ConvertTo-Json $payload
+                $url = "https://api.github.com/graphql"
+                $response= Invoke-RestMethod -Uri $url -Headers $headers -Method "POST" -Body $body
+                $response | ConvertTo-Json -Compress | Write-Host
+
+                Write-Host "Minimized comment"
+              } else {
+                Write-Host "No comment id to minimize"
               }
 
               if (!$commentToPost -and !$labelToAdd) {
