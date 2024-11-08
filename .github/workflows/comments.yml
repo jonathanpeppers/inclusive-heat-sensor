@@ -33,12 +33,12 @@ on:
         type: boolean
       offensiveThreshold:
         description: "Threshold value for comment to be considered offensive."
-        default: 4
+        default: 8
         required: false
         type: number
       angerThreshold:
         description: "Threshold value for comment to be considered angry."
-        default: 4
+        default: 8
         required: false
         type: number
 
