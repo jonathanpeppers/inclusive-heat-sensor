@@ -105,7 +105,7 @@ jobs:
             '/azp run',
             '/azp list'
           )
-          if ($allowedList.Contains($body.ToLower()) {
+          if ($allowedList.Contains($body.ToLower())) {
             Write-Host "Allowed: because the text is in the allowed list of bodies: $body"
             exit 0
           }
