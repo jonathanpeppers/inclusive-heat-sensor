@@ -117,7 +117,7 @@ jobs:
           }
 
           $body = @{
-            comment = "Title: $($data.title) `nBody:`n$($data.body)"
+            comment = "$($data.title)`n$($data.body)"
             url = $url
           }
           $bodyJson = $body | ConvertTo-Json -Compress
