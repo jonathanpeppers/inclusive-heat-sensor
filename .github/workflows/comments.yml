@@ -55,6 +55,7 @@ jobs:
           $isPr = true
           $commentId = ""
           $url = ""
+          $isBot = $github.event.sender.type -eq "Bot"
           if ($github.event_name -eq "pull_request") {
             $data = @{
               title = $github.event.pull_request.title;
@@ -94,6 +95,25 @@ jobs:
             Write-Host "A new issue was opened."
           } else {
             Write-Error "TODO: $($github.event_name)"
+          }
+
+          if ($isBot) {
+            Write-Host "Allowed: because the sender is a bot"
+            exit 0
+          }
+
+          # list of terms we don't need/want to check
+          $textToVerify = $data.body.trim()
+          $allowedList = @(
+            '/rebase',
+            '/azp help',
+            '/azp where'
+            '/azp run',
+            '/azp list'
+          )
+          if ($allowedList.Contains($textToVerify.ToLower())) {
+            Write-Host "Allowed: because the text is in the allowed list of bodies: $textToVerify"
+            exit 0
           }
 
           $body = @{
