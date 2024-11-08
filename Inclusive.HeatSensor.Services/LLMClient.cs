@@ -85,7 +85,7 @@ public class LLMClient
             _logger.LogInformation("Exception from OpenAI: {ex}", ex);
             if (ex.Message.Contains("content_filter", StringComparison.OrdinalIgnoreCase))
             {
-                return new Rating { Offensive = 10, Anger = 10, Url = url };
+                return new Rating { Offensive = -1, Anger = -1, Url = url };
             }
             else
             {
