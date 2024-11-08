@@ -53,9 +53,14 @@ public class LLMClient
         Respond using JSON syntax, using the format: { "offensive": 1, "anger": 2 }
         """;
 
-    public async Task<Rating> RateComment(string comment)
+    public async Task<Rating> RateComment(string comment, string? url)
     {
-        _logger.LogInformation("Comment: {comment}", comment);
+        // If we have the URL, no need to log the comment text.
+        // This is probably better, as it gives users an option to delete their comment and we have no record of it.
+        if (string.IsNullOrEmpty(url))
+        {
+            _logger.LogInformation("Comment: {comment}", comment);
+        }
 
         try
         {
@@ -80,7 +85,7 @@ public class LLMClient
             _logger.LogInformation("Exception from OpenAI: {ex}", ex);
             if (ex.Message.Contains("content_filter", StringComparison.OrdinalIgnoreCase))
             {
-                return new Rating { Offensive = 10, Anger = 10 };
+                return new Rating { Offensive = 10, Anger = 10, Url = url };
             }
             else
             {
@@ -99,6 +104,10 @@ public class Rating
 {
     [JsonPropertyName("offensive")]
     public int Offensive { get; set; }
+
     [JsonPropertyName("anger")]
     public int Anger { get; set; }
+
+    [JsonPropertyName("url")]
+    public string? Url { get; set; }
 }

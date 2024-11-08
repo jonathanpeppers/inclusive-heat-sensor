@@ -23,19 +23,19 @@ namespace Inclusive.HeatSensor.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Post([FromBody] HeatSensorRequest requestBoday)
+        public async Task<ActionResult<string>> Post([FromBody] HeatSensorRequest request)
         {
-            // Handle the comment here
-            _logger.LogInformation("heatsensor request");
+            _logger.LogDebug("heatsensor request");
 
-            if (string.IsNullOrEmpty(requestBoday.Comment))
+            if (string.IsNullOrEmpty(request.Comment))
             {
                 _logger.LogInformation("comment is blank");
                 return new BadRequestObjectResult("Please provide a comment to rate.");
             }
 
-            _logger.LogDebug("comment: " + requestBoday.Comment);
-            var rating = await _client.RateComment(requestBoday.Comment);
+            // LogDebug shouldn't save the message
+            _logger.LogDebug("Request Comment: " + request.Comment);
+            var rating = await _client.RateComment(request.Comment, request.Url);
             return new OkObjectResult(rating);
         }
     }

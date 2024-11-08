@@ -54,6 +54,7 @@ jobs:
 
           $isPr = true
           $commentId = ""
+          $url = ""
           $isBot = $github.event.sender.type -eq "Bot"
           if ($github.event_name -eq "pull_request") {
             $data = @{
@@ -61,6 +62,7 @@ jobs:
               body = $github.event.pull_request.body;
             }
             $number = $github.event.number
+            $url = $github.event.pull_request.html_url
             Write-Host "This was a pull request that was opened."
           } elseif ($github.event_name -eq "pull_request_review_comment") {
             $data = @{
@@ -68,6 +70,7 @@ jobs:
               body = $github.event.comment.body
             }
             $commentId = $github.event.comment.node_id
+            $url = $github.event.comment.html_url
             $number = $github.event.pull_request.number
             $isPr = true
             Write-Host "There was a review comment on a pull request."
@@ -77,6 +80,7 @@ jobs:
               body = $github.event.comment.body
             }
             $commentId = $github.event.comment.node_id
+            $url = $github.event.comment.html_url
             $number = $github.event.issue.number
             $isPr = false
             Write-Host "There was a comment on an issue or pull request."
@@ -86,6 +90,7 @@ jobs:
               body = $github.event.issue.body
             }
             $number = $github.event.issue.number
+            $url = $github.event.issue.html_url
             $isPr = false
             Write-Host "A new issue was opened."
           } else {
@@ -113,6 +118,7 @@ jobs:
 
           $body = @{
             comment = "Title: $($data.title) `nBody:`n$($data.body)"
+            url = $url
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           
