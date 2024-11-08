@@ -98,15 +98,15 @@ jobs:
           }
 
           # list of terms we don't need/want to check
-          $body = $body.trim()
+          $textToVerify = $data.body.trim()
           $allowedList = @(
             '/azp help',
             '/azp where'
             '/azp run',
             '/azp list'
           )
-          if ($allowedList.Contains($body.ToLower())) {
-            Write-Host "Allowed: because the text is in the allowed list of bodies: $body"
+          if ($allowedList.Contains($textToVerify.ToLower())) {
+            Write-Host "Allowed: because the text is in the allowed list of bodies: $textToVerify"
             exit 0
           }
 
