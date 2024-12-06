@@ -31,6 +31,16 @@ on:
         default: false
         required: false
         type: boolean
+      offensiveThreshold:
+        description: "Threshold value for comment to be considered offensive."
+        default: 8
+        required: false
+        type: number
+      angerThreshold:
+        description: "Threshold value for comment to be considered angry."
+        default: 8
+        required: false
+        type: number
 
 jobs:
   comments:
@@ -141,8 +151,10 @@ jobs:
 
             Write-Host "Anger: $anger"
             Write-Host "Offensive: $offensive"
+            $angerThreshold = "${{ inputs.angerThreshold }}"
+            $offensiveThreshold = "${{ inputs.offensiveThreshold }}"
 
-            if ($anger -ge 7 -and $offensive -ge 7) {
+            if ($anger -ge $angerThreshold -and $offensive -ge $offensiveThreshold) {
               Write-Host "Anger/Offense condition reached"
               $commentToPost = "${{ inputs.commentToPost }}"
               if ($commentToPost) {
