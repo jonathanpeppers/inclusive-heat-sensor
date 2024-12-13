@@ -12,7 +12,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "comment": "this is a code review comment"
+  "comment": "this is a code review comment",
+  "url": "https://github.com/jonathanpeppers/inclusive-heat-sensor/issues/27#issuecomment-2465032570"
 }
 
 ### POST Request
@@ -21,5 +22,6 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "comment": "this code is very very ugly. We should stop doing it ASAP."
+  "comment": "this code is very very ugly. We should stop doing it ASAP.",
+  "url": "https://github.com/jonathanpeppers/inclusive-heat-sensor/issues/27#issuecomment-2465032570"
 }
