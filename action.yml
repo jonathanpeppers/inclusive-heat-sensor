@@ -40,57 +40,59 @@ runs:
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
       run: |
-        Write-Host "Starting action..."
+        "Determining if the comment is offensive or angry..."
 
         $github = $env:GITHUB_CONTEXT | ConvertFrom-Json
 
+        Write-Output "::group::Parsing event data..."
         $isPr = true
         $commentId = ""
         $url = ""
         $isBot = $github.event.sender.type -eq "Bot"
         if ($github.event_name -eq "pull_request") {
           $data = @{
-            title = $github.event.pull_request.title;
-            body = $github.event.pull_request.body;
+            title = "$($github.event.pull_request.title)"
+            body = "$($github.event.pull_request.body)"
           }
           $number = $github.event.number
           $url = $github.event.pull_request.html_url
-          Write-Host "This was a pull request that was opened."
+          Write-Output "This was a pull request that was opened."
         } elseif ($github.event_name -eq "pull_request_review_comment") {
           $data = @{
             title = ""
-            body = $github.event.comment.body
+            body = "$($github.event.comment.body)"
           }
           $commentId = $github.event.comment.node_id
           $url = $github.event.comment.html_url
           $number = $github.event.pull_request.number
           $isPr = true
-          Write-Host "There was a review comment on a pull request."
+          Write-Output "There was a review comment on a pull request."
         } elseif ($github.event_name -eq "issue_comment") {
           $data = @{
             title = ""
-            body = $github.event.comment.body
+            body = "$($github.event.comment.body)"
           }
           $commentId = $github.event.comment.node_id
           $url = $github.event.comment.html_url
           $number = $github.event.issue.number
           $isPr = false
-          Write-Host "There was a comment on an issue or pull request."
+          Write-Output "There was a comment on an issue or pull request."
         } elseif ($github.event_name -eq "issues") {
           $data = @{
-            title = $github.event.issue.title
-            body = $github.event.issue.body
+            title = "$($github.event.issue.title)"
+            body = "$($github.event.issue.body)"
           }
           $number = $github.event.issue.number
           $url = $github.event.issue.html_url
           $isPr = false
-          Write-Host "A new issue was opened."
+          Write-Output "A new issue was opened."
         } else {
           Write-Error "TODO: $($github.event_name)"
         }
 
         if ($isBot) {
-          Write-Host "Allowed: because the sender is a bot"
+          Write-Output "Allowed: because the sender is a bot"
+          Write-Output "::endgroup::"
           exit 0
         }
 
@@ -104,9 +106,14 @@ runs:
           '/azp list'
         )
         if ($allowedList.Contains($textToVerify.ToLower())) {
-          Write-Host "Allowed: because the text is in the allowed list of bodies: $textToVerify"
+          Write-Output "Allowed: because the text is in the allowed list of bodies: $textToVerify"
+          Write-Output "::endgroup::"
           exit 0
         }
+
+        Write-Output "::endgroup::"
+
+        Write-Output "::group::Sending data to sentiment analysis service..."
 
         $body = @{
           comment = "$($data.title)`n$($data.body)"
@@ -114,53 +121,60 @@ runs:
         }
         $bodyJson = $body | ConvertTo-Json -Compress
         
-        Write-Host "Will send this JSON:"
-        $bodyJson | Out-String | Write-Host
+        Write-Output "Will send this JSON:"
+        $bodyJson | Out-String | Write-Output
         
         $endpoint = "${{ inputs.endpoint }}"
         if (!$endpoint) {
           $endpoint = 'https://icr-heat-sensor.wus3.sample-dev.azgrafana-test.io/api/HeatSensor';
         }
-        Write-Host "To: $endpoint"
+        Write-Output "To: $endpoint"
         $result = Invoke-WebRequest -Method POST -Uri "$endpoint" -ContentType "application/json" -Body $bodyJson
-        $result | Out-String | Write-Host
+        $result | Out-String | Write-Output
         
-        if ($result.StatusCode -eq 200) {
-          Write-Host "We got something!"
-          $content = $result.Content | ConvertFrom-Json
-          $anger = $content.anger
-          $offensive = $content.offensive
+        if ($result.StatusCode -ne 200) {
+          Write-Output "We got nothing or there was an error :("
+          Write-Output "::endgroup::"
+          exit 0
+        }
+      
+        Write-Output "::group::Processing data from sentiment analysis service..."
 
-          Write-Host "Anger: $anger"
-          Write-Host "Offensive: $offensive"
-          $angerThreshold = "${{ inputs.angerThreshold }}"
-          $offensiveThreshold = "${{ inputs.offensiveThreshold }}"
+        Write-Output "We got something!"
+        $content = $result.Content | ConvertFrom-Json
+        $anger = $content.anger
+        $offensive = $content.offensive
 
-          if ($anger -ge $angerThreshold -and $offensive -ge $offensiveThreshold) {
-            Write-Host "Anger/Offense condition reached"
-            $commentToPost = "${{ inputs.commentToPost }}"
-            if ($commentToPost) {
-              if ($isPr) {
-                & gh pr comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
-              } else {
-                & gh issue comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
-              }
+        Write-Output "Anger: $anger"
+        Write-Output "Offensive: $offensive"
+        $angerThreshold = "${{ inputs.angerThreshold }}"
+        $offensiveThreshold = "${{ inputs.offensiveThreshold }}"
+
+        if ($anger -ge $angerThreshold -and $offensive -ge $offensiveThreshold) {
+          Write-Output "Anger/Offense condition reached"
+          $commentToPost = "${{ inputs.commentToPost }}"
+          if ($commentToPost) {
+            if ($isPr) {
+              & gh pr comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
+            } else {
+              & gh issue comment "$number" --repo "${{ github.repository }}" --body "$commentToPost"
             }
+          }
 
-            $labelToAdd = "${{ inputs.labelToAdd }}"
-            if ($labelToAdd) {
-              if ($isPr) {
-                & gh pr edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
-              } else {
-                & gh issue edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
-              }
+          $labelToAdd = "${{ inputs.labelToAdd }}"
+          if ($labelToAdd) {
+            if ($isPr) {
+              & gh pr edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
+            } else {
+              & gh issue edit "$number" --add-label "$labelToAdd" --repo "${{ github.repository }}"
             }
+          }
 
-            $minimizeComment = "${{ inputs.minimizeComment }}"
-            if ($commentId -and $minimizeComment -eq $true) {
-              Write-Host "Minimizing comment id: $commentId"
+          $minimizeComment = "${{ inputs.minimizeComment }}"
+          if ($commentId -and $minimizeComment -eq $true) {
+            Write-Output "Minimizing comment id: $commentId"
 
-                $mutation =@"
+              $mutation =@"
         mutation {
             __typename
             minimizeComment(
@@ -174,31 +188,29 @@ runs:
         }
         "@
 
-              $payload = @{
-                  query=$mutation
-              }
-
-              $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-              $headers.Add("content-type","application/json")
-              $headers.Add("Authorization","bearer $Env:GITHUB_TOKEN")
-
-              $body = ConvertTo-Json $payload
-              $url = "https://api.github.com/graphql"
-              $response= Invoke-RestMethod -Uri $url -Headers $headers -Method "POST" -Body $body
-              $response | ConvertTo-Json -Compress | Write-Host
-
-              Write-Host "Minimized comment"
-            } else {
-              Write-Host "No comment id to minimize"
+            $payload = @{
+                query=$mutation
             }
 
-            if (!$commentToPost -and !$labelToAdd) {
-              Write-Host "Neither 'commentToPost' nor 'labelToAdd' was set, so not notifying anybody"
-            }
+            $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+            $headers.Add("content-type","application/json")
+            $headers.Add("Authorization","bearer $Env:GITHUB_TOKEN")
+
+            $body = ConvertTo-Json $payload
+            $url = "https://api.github.com/graphql"
+            $response= Invoke-RestMethod -Uri $url -Headers $headers -Method "POST" -Body $body
+            $response | ConvertTo-Json -Compress | Write-Output
+
+            Write-Output "Minimized comment"
           } else {
-            Write-Host "Comment is OK"
+            Write-Output "No comment id to minimize"
+          }
+
+          if (!$commentToPost -and !$labelToAdd) {
+            Write-Output "Neither 'commentToPost' nor 'labelToAdd' was set, so not notifying anybody"
           }
         } else {
-          Write-Host "We got nothing :("
+          Write-Output "Comment is OK"
         }
-        exit 0
+
+        Write-Output "::endgroup::"
