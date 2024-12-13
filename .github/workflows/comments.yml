@@ -17,5 +17,5 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: jonathanpeppers/inclusive-heat-sensor@dev/action
+      - uses: jonathanpeppers/inclusive-heat-sensor@main
         continue-on-error: true
