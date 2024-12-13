@@ -214,3 +214,5 @@ runs:
         }
 
         Write-Output "::endgroup::"
+
+        Write-Output "Done."
