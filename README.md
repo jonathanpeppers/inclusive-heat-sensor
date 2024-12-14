@@ -63,3 +63,46 @@ brew install azure-functions-core-tools@4
 3. Open the workspace using `code .` 
 4. Cmd+P and run `.NET: Open Solution`
 5. Goto the Debugging Tab and it should auto pickup the `Attach to .NET Functions` debug option. Press F5 to run. 
+
+## Using the Action
+
+To integrate this action into your GitHub repository, create a YAML file named `.github/workflows/heat-sensor.yml`. You can customize the file name (heat-sensor.yml) to your liking.
+
+Here’s an example of how to configure the workflow:
+
+```yml
+name: Heat Sensor Tester
+on:
+  issues:
+    types: [opened, reopened]
+  issue_comment:
+    types: [created, edited]
+  pull_request:
+    types: [opened, reopened]
+  pull_request_review_comment:
+    types: [created, edited]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  detect-heat:
+    uses: jonathanpeppers/inclusive-heat-sensor@v1.0
+    secrets: inherit
+    with:
+      minimizeComment: true
+      offensiveThreshold: 2
+      angerThreshold: 2
+```
+
+This configuration uses version v1.0.0 of the action. If you prefer to use the latest version from the main branch, update the `uses` field as follows:
+
+```yml
+jobs:
+  detect-heat:
+    uses: jonathanpeppers/inclusive-heat-sensor@main
+```
+
+Using this workflow, you can customize the minimizeComment and offensive/anger thresholds to your specific use case.
