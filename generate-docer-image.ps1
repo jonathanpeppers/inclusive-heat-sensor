@@ -3,7 +3,7 @@
 # Variables
 $acrName = "icrheatsensor2409.azurecr.io"
 $imageName = "inclusive-heat-sensor-web"
-$imageTag = "0.3.241206"  # You can change this to another tag if needed
+$imageTag = "0.3.241220"  # You can change this to another tag if needed
 $dockerfilePath = "./Inclusive.HeatSensor.Web/Dockerfile"
 
 # Login to Azure
