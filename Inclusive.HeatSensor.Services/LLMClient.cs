@@ -62,6 +62,7 @@ public class LLMClient
             _logger.LogInformation("Comment: {comment}", comment);
         }
 
+        Rating? rating;
         try
         {
             var response = await _chat.CompleteChatAsync(
@@ -75,23 +76,26 @@ public class LLMClient
                     ResponseFormat = ChatResponseFormat.JsonObject,
                 });
             var json = response.Value.Content[0].ToString();
-            _logger.LogInformation("Rating: {json}", json);
-            var rating = JsonSerializer.Deserialize(json, RatingContext.Default.Rating);
+            _logger.LogInformation("OpenAI reponse: {json}", json);
+            rating = JsonSerializer.Deserialize(json, RatingContext.Default.Rating);
             ArgumentNullException.ThrowIfNull(rating, nameof(rating));
-            return rating;
         }
         catch (ClientResultException ex)
         {
-            _logger.LogInformation("Exception from OpenAI: {ex}", ex);
+            _logger.LogInformation("OpenAI exception: {ex}", ex);
             if (ex.Message.Contains("content_filter", StringComparison.OrdinalIgnoreCase))
             {
-                return new Rating { Offensive = -1, Anger = -1, Url = url };
+                rating = new Rating { Offensive = -1, Anger = -1, Url = url };
             }
             else
             {
                 throw;
             }
         }
+
+        rating.Url = url;
+        _logger.LogInformation("Rating: {rating}", rating);
+        return rating;
     }
 }
 
@@ -110,4 +114,7 @@ public class Rating
 
     [JsonPropertyName("url")]
     public string? Url { get; set; }
+
+    public override string ToString() =>
+        JsonSerializer.Serialize(this, RatingContext.Default.Rating);
 }
